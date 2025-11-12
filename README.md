@@ -1,2 +1,2 @@
 # Space_invader
-little game for scholl project
+little game for school project
