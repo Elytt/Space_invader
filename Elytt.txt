@@ -1,0 +1,7 @@
+fcts:
+generate invaders
+invaders movements
+loose condition
+
+Requierments:
+recursivity
