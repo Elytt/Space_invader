@@ -7,73 +7,91 @@
 
 print("This code is for a school project only. You can use a part if you want but we are an open source project.\nReminder this file is only ONE PART OF THE ENTIRE PROJECT so please be respectful")
 
+import pygame
 
-class Invaders:  # Create invader class
-    def __init__(self, life, position):
-        self.position = position
+# --- Invader Settings ---
+INVADER_SIZE = (30, 30)
+INVADER_COLORS = {
+    1: (0, 255, 0),    # Green for life 1
+    2: (255, 255, 0),  # Yellow for life 2
+    3: (255, 0, 0),    # Red for life 3
+}
+class Invader(pygame.sprite.Sprite):
+    """Class to represent an invader."""
+    def __init__(self, life, initial_position):
+        super().__init__()
         self.life = life
+        self.image = pygame.Surface(INVADER_SIZE)
+        self.image.fill(INVADER_COLORS.get(life, (255, 255, 255)))  # Default to white
+        self.rect = self.image.get_rect(topleft=initial_position)
+        self.direction = 1  # 1 for right, -1 for left
+        self.speed = 1
 
-    def __str__(self):
-        return f"Invader at {self.position} with life {self.life}"
+    def update(self):
+        """Move the invader."""
+        self.rect.x += self.speed * self.direction
 
-    @staticmethod
-    def create_invader_grid(rows, cols):
-        grid = []
-        for row in range(rows):
-            for col in range(cols):
-                if row == 0:
-                    life = 1  # Small Invader
-                elif row == 1:
-                    life = 2  # Medium Invader
-                else:
-                    life = 3  # Big Invader
+def generate_invaders(rows, cols, start_pos=(50, 50)):
+    """
+    Generates a grid of invaders recursively.
+    """
+    invaders = pygame.sprite.Group()
+    def _generate(row, col):
+        if row >= rows:
+            return
+        
+        life = (row % 3) + 1
+        x = start_pos[0] + col * (INVADER_SIZE[0] + 10)
+        y = start_pos[1] + row * (INVADER_SIZE[1] + 10)
+        
+        invader = Invader(life, (x, y))
+        invaders.add(invader)
 
-                invader = Invaders(life, (row, col))
-                grid.append(invader)
-        return grid
+        next_col = col + 1
+        next_row = row
+        if next_col >= cols:
+            next_col = 0
+            next_row += 1
+        
+        _generate(next_row, next_col)
 
-class Wave:
-    def __init__(self, invader_type, count, start_row=0):
-        self.invader_type = invader_type
-        self.count = count
-        self.start_row = start_row  # Start position for the wave
-        self.waves = []
-        self.invaders = []
-        self.direction = 1 # 1 for right and -1 for left
-
-    def create_invaders(self):
-        invaders = []
-        for i in range(self.count):
-            position = (self.start_row, i)  # Unique position for each invader
-            invader = Invaders(self.invader_type.life, position)
-            invaders.append(invader)
-        return invaders
-
-class WaveSystem:
-    def __init__(self):
-        self.waves = []
-
-    def add_wave(self, wave):
-        self.waves.append(wave)
-
-    def start_waves(self):
-        for wave in self.waves:
-            print(f"Starting wave of {wave.count} invaders!")
-            invaders = wave.create_invaders()
-            for invader in invaders:
-                print(invader)  # Display or process each invader
-            print("Wave completed.\n")
+    _generate(0, 0)
+    return invaders
 
 
-# Create invader types
-small_invader = Invaders(1, (0, 0))
-medium_invader = Invaders(2, (0, 0))
-big_invader = Invaders(3, (0, 0))
-# Initialize the wave system
-wave_system = WaveSystem()
-# Create and add waves
-wave_system.add_wave(Wave(small_invader, count=10, start_row=0))
-wave_system.add_wave(Wave(medium_invader, count=6, start_row=1))
-wave_system.add_wave(Wave(big_invader, count=3, start_row=2))
-# Start waves
-wave_system.start_waves()
+def move_invaders(invaders):
+    """
+    Moves the group of invaders and handles wall collision.
+    """
+    move_down = False
+    for invader in invaders:
+        if invader.rect.right > 750 or invader.rect.left < 50:
+            move_down = True
+            break
+    
+    if move_down:
+        for invader in invaders:
+            invader.direction *= -1
+            invader.rect.y += INVADER_SIZE[1] + 5
+
+
+def check_lose_condition(invaders_param, screen_height):
+    """
+    Checks if any invader has reached the bottom of the screen.
+    Returns: True if the lose condition is met, False otherwise.
+    """
+    # Ensure invaders_param is a list for consistent processing
+    if isinstance(invaders_param, pygame.sprite.Group):
+        invaders_list = invaders_param.sprites()
+    else:
+        invaders_list = invaders_param # It's already a list from recursive call
+
+    if not invaders_list:
+        return False
+        
+    last_invader = invaders_list[-1]
+    if last_invader.rect.bottom >= screen_height:
+        return True
+    
+    # Recursive call with the rest of the list
+    return check_lose_condition(invaders_list[:-1], screen_height)
