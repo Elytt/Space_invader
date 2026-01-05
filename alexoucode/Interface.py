@@ -53,8 +53,9 @@ ecran = pygame.display.set_mode(
     display=0, 
     vsync=1 # avoir la syncronisation verticale
     )
+INVADER_COLOR = 5
 score = 15
-nb_vie = 1 # nombre de vies de base
+nb_vie = 0 # nombre de vies de base
 
 while running:     
     ecran.blit(bg, (0, 0)) # mettre l'image en fond d'écran de l'accueil
@@ -74,9 +75,11 @@ while running:
         pygame.mixer.Sound.play(son_mort, 0)
         ecran.fill(vert_mort)
         text_mort = police_mort.render('GAME OVER !!!!', False, rouge)
-        text_mort_score = police_mort_score.render(f'Ton score est de : {score}', False, blanc)
+        text_mort_score = police_mort_score.render(f'Ton score est de : {score * 500}', False, blanc)
         ecran.blit(text_mort, (180,200))
         ecran.blit(text_mort_score, (180,300))
+    if INVADER_COLOR <= 0 :
+        score += 1
     ips.tick(60) # taux de rafraichissement de l'image à 60 images par secondes
 
     pygame.display.update()
