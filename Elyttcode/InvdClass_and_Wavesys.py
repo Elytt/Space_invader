@@ -73,3 +73,4 @@ wave_system.add_wave(Wave(big_invader, count=5, start_row=2))
 
 # Start waves
 wave_system.start_waves()
+ 
