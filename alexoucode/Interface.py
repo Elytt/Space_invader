@@ -9,12 +9,12 @@ ips = pygame.time.Clock()
 # RESSOURCES
 
     # quelques couleurs prédéfinies
-bleu = (0, 0, 255)
-rouge = (255, 0, 0)
-vert = (0, 255, 0)
-noir = (0, 0, 0)
-blanc = (255, 255, 255)
-vert_mort = (94, 229, 77)
+BLEU = (0, 0, 255)
+ROUGE = (255, 0, 0)
+VERT = (0, 255, 0)
+NOIR = (0, 0, 0)
+BLANC = (255, 255, 255)
+VERT_MORT = (94, 229, 77)
     # initialiser le module display
 pygame.display.init()
     # dimensions de la fenêtre
@@ -29,10 +29,10 @@ pygame.display.set_icon(icon_home)
 bg = pygame.image.load('../assets/fond-ecran_accueil.png')
 bg = pygame.transform.scale(bg, (LARGEUR, HAUTEUR))
     # image
-vie_0 =pygame.image.load("../assets/vie_0.png")
-vie_1 =pygame.image.load("../assets/vie_1.png")
-vie_2 =pygame.image.load("../assets/vie_2.png")
-vie_3 =pygame.image.load("../assets/vie_3.png")
+vie_0 = pygame.image.load("../assets/vie_0.png")
+vie_1 = pygame.image.load("../assets/vie_1.png")
+vie_2 = pygame.image.load("../assets/vie_2.png")
+vie_3 = pygame.image.load("../assets/vie_3.png")
     # variable qui permet de garder le jeu ouvert
 running = True
     # musique
@@ -73,9 +73,9 @@ while running:
     if nb_vie <= 0 :
         pygame.mixer.music.stop()
         pygame.mixer.Sound.play(son_mort, 0)
-        ecran.fill(vert_mort)
-        text_mort = police_mort.render('GAME OVER !!!!', False, rouge)
-        text_mort_score = police_mort_score.render(f'Ton score est de : {score * 500}', False, blanc)
+        ecran.fill(VERT_MORT)
+        text_mort = police_mort.render('GAME OVER !!!!', False, ROUGE)
+        text_mort_score = police_mort_score.render(f'Ton score est de : {score * 500}', False, BLANC)
         ecran.blit(text_mort, (180,200))
         ecran.blit(text_mort_score, (180,300))
     if INVADER_COLOR <= 0 :
