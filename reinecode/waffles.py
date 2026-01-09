@@ -44,6 +44,7 @@ def collision(projectile, invader):
     if projectile.position_actuelle() == invader.position:
         return True
     return False
+
 def update_projectiles(projectiles, invaders):
     """
     Met à jour tous les projectiles :
