@@ -1,6 +1,7 @@
 import pygame
 
 # --- CONFIGURATION GLOBALE ---
+
 LARGEUR, HAUTEUR = 800, 600 #taille de la fenètre
 VITESSE_JOUEUR = 5  #Valeur qui pourra être modifiée 
 NOIR = (0, 0, 0) #Couleur du fond
@@ -17,43 +18,7 @@ def initialiser_jeu(titre="Space Invaders", l=LARGEUR, h=HAUTEUR):
     horloge = pygame.time.Clock()
     return ecran, horloge
 
-def creer_joueur():
-    """
-    Crée le joueur (rectangle vert) et définit la position de départ du joueur
-    Retour: pygame.Rect
-    """
-    joueur = pygame.Rect(LARGEUR // 2, HAUTEUR - 50, 40, 30) #Sprite à ajouter après mais pour l'instant c'est un rectangle :)
-    return joueur
-
-def gerer_deplacement_joueur(joueur, touches):
-    """
-    Modifie la position du joueur selon les touches pressées 
-    Arguments: joueur (pygame.Rect), touches (pygame.key.get_pressed)
-    """
-    if touches[pygame.K_LEFT] and joueur.left > 0:
-        joueur.x -= VITESSE_JOUEUR
-    if touches[pygame.K_RIGHT] and joueur.right < LARGEUR:
-        joueur.x += VITESSE_JOUEUR
-
-def tirer_projectile(touches, position_depart, liste_projectiles, dernier_tir):
-    """
-    Crée un projectile si Espace est pressé et si le temps de recharge est passé
-    """
-    maintenant = pygame.time.get_ticks()
-    delai_tir = 500  # 500 millisecondes entre chaque tir
-
-    if touches[pygame.K_SPACE]:
-        if maintenant - dernier_tir > delai_tir:
-            # On centre le tir sur le joueur
-            x = position_depart[0] + 17 # Ajustement pour être au milieu du vaisseau
-            y = position_depart[1]
-            
-            nouveau_projectile = Projectile((x, y), 10, -1)
-            liste_projectiles.append(nouveau_projectile)
-            return maintenant # On renvoie l'heure du tir pour mettre à jour le chrono entre tirs
-            
-    return dernier_tir # Si on a pas tiré on renvoie l'ancien chrono 
-
+#------------------ PROJECTILES ---------------
 
 class Projectile:
     """
@@ -93,15 +58,6 @@ class Projectile:
         return (self.x, self.y)
 
 
-def collision(projectile, invader):
-    """
-    Vérifie si le projectile touche un invader
-    Ici on compare simplement les positions (logique simple)
-    """
-    if projectile.position_actuelle() == invader.position:
-        return True
-    return False
-
 def update_projectiles(projectiles, invaders):
     """
     Met à jour tous les projectiles :
@@ -135,6 +91,63 @@ def update_projectiles(projectiles, invaders):
     # Supprimer les projectiles inactifs
     projectiles[:] = [p for p in projectiles if p.actif]
 
+
+
+
+# ------------- JOUEUR --------
+
+def creer_joueur():
+    """
+    Crée le joueur (rectangle vert) et définit la position de départ du joueur
+    Retour: pygame.Rect
+    """
+    joueur = pygame.Rect(LARGEUR // 2, HAUTEUR - 50, 40, 30) #Sprite à ajouter après mais pour l'instant c'est un rectangle :)
+    return joueur
+
+def gerer_deplacement_joueur(joueur, touches):
+    """
+    Modifie la position du joueur selon les touches pressées 
+    Arguments: joueur (pygame.Rect), touches (pygame.key.get_pressed)
+    """
+    if touches[pygame.K_LEFT] and joueur.left > 0:
+        joueur.x -= VITESSE_JOUEUR
+    if touches[pygame.K_RIGHT] and joueur.right < LARGEUR:
+        joueur.x += VITESSE_JOUEUR
+
+def tirer_projectile(touches, position_depart, liste_projectiles, dernier_tir):
+    """
+    Crée un projectile si Espace est pressé et si le temps de recharge est passé
+    """
+    maintenant = pygame.time.get_ticks()
+    delai_tir = 500  # 500 millisecondes entre chaque tir
+
+    if touches[pygame.K_SPACE]:
+        if maintenant - dernier_tir > delai_tir:
+            # On centre le tir sur le joueur
+            x = position_depart[0] + 17 # Ajustement pour être au milieu du vaisseau
+            y = position_depart[1]
+            
+            nouveau_projectile = Projectile((x, y), 10, -1)
+            liste_projectiles.append(nouveau_projectile)
+            return maintenant # On renvoie l'heure du tir pour mettre à jour le chrono entre tirs
+            
+    return dernier_tir # Si on a pas tiré on renvoie l'ancien chrono 
+
+
+#------- COLLISIONS --------
+
+
+def collision(projectile, invader):
+    """
+    Vérifie si le projectile touche un invader
+    Ici on compare simplement les positions (logique simple)
+    """
+    if projectile.position_actuelle() == invader.position:
+        return True
+    return False
+
+
+#---------- LANCEMENT DU JEU ----------
 
 def main():
     """
