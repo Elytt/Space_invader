@@ -218,8 +218,8 @@ def main():
             if hasattr(invader, 'shoot') and invader.shoot(chance=100000):
                 nouveau_tir = Projectile(invader.rect.midbottom, 3, 1)
                 projectiles_ennemis.append(nouveau_tir)
-                all_invaders.update()       # Fait bouger les aliens individuellement
-                move_invaders(all_invaders) # Gère le rebond sur les murs et la descente
+        all_invaders.update()       # Fait bouger les aliens individuellement
+        move_invaders(all_invaders) # Gère le rebond sur les murs et la descente
                 
 
 # --- Mise à jour des projectiles ennemis ---
