@@ -7,7 +7,8 @@
 
 # Importation zone                                                              
 import pygame                                                                   
-import time                                                                     
+import time
+import random
 
 # --- Game Settings ---                                                         
 SCREEN_WIDTH = 800                                                              
@@ -31,6 +32,15 @@ class Invader(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=initial_position)               
         self.direction = 1  # 1 for right, -1 for left                          
         self.speed = 2  # Speed of the invader
+
+    def shoot(self, chance=1000):
+        """
+        Define "randomly" if the invader shoot.
+        'chance' défined rarirty : 1 chance / 1000 in each frame.
+        """
+        if random.randint(1, chance) == 1:
+            return True
+        return False
 
     def update(self):                                                           
         """Move the invader."""                                                 
