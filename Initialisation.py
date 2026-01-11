@@ -189,6 +189,7 @@ def collision(projectile, invader):
 #---------- LANCEMENT DU JEU ----------
 
 def main():
+    global NB_VIE
     """
     Lance le jeu
     Pas d'arguments
@@ -219,7 +220,7 @@ def main():
                 projectiles_ennemis.append(nouveau_tir)
                 all_invaders.update()       # Fait bouger les aliens individuellement
                 move_invaders(all_invaders) # Gère le rebond sur les murs et la descente
-                all_invaders.draw(ecran)    # Dessine les aliens sur l'écran
+                
 
 # --- Mise à jour des projectiles ennemis ---
 
@@ -227,9 +228,9 @@ def main():
             p_ennemi.deplacer()
             # Vérifier si le joueur est touché
             if p_ennemi.rect.colliderect(joueur):
-                print("DÉFAITE : Le vaisseau a été détruit !")
-                en_cours = False
-# Nettoyage des projectiles ennemis hors écra
+                print("DÉFAITE : Le vaisseau a été abimé !")
+                NB_VIE -= 1
+# Nettoyage des projectiles ennemis hors écran
         projectiles_ennemis[:] = [p for p in projectiles_ennemis if p.actif]
         #end nettoyage
 
@@ -252,7 +253,9 @@ def main():
             )
         
         ecran.blit(vaisseau, joueur) # On affiche l'image du vaisseau sur le joueur
+        all_invaders.draw(ecran)    # Dessine les aliens sur l'écran
 
+        
         for proj in liste_projectiles: #on dessine les projectiles 
                 pygame.draw.rect(ecran, (255, 255, 0), proj.rect)
         for p_ennemi in projectiles_ennemis:
