@@ -1,4 +1,5 @@
 import pygame
+from Invaders import * #import des Invaders
 
 # --- CONFIGURATION GLOBALE ---
 
@@ -164,7 +165,8 @@ def main():
     joueur = creer_joueur()
 
     liste_projectiles = []
-    invaders = []
+    projectiles_ennemis = []
+
 
     dernier_tir = 0
 
@@ -174,6 +176,23 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 en_cours = False
+# --- Tir des Invaders ---
+        for invader in all_invaders:
+            if hasattr(invader, 'tirer') and invader.tirer(chance=1000):
+                nouveau_tir = Projectile(invader.rect.midbottom, 5, 1)
+                projectiles_ennemis.append(nouveau_tir)
+
+# --- Mise à jour des projectiles ennemis ---
+
+        for p_ennemi in projectiles_ennemis:
+            p_ennemi.deplacer()
+            # Vérifier si le joueur est touché
+            if p_ennemi.rect.colliderect(joueur):
+                print("DÉFAITE : Le vaisseau a été détruit !")
+                en_cours = False
+# Nettoyage des projectiles ennemis hors écra
+        projectiles_ennemis[:] = [p for p in projectiles_ennemis if p.actif]
+        #end nettoyage
 
         touches = pygame.key.get_pressed()
         gerer_deplacement_joueur(joueur, touches)
@@ -189,6 +208,8 @@ def main():
 
         for proj in liste_projectiles: #on dessine les projectiles 
                 pygame.draw.rect(ecran, (255, 255, 0), proj.rect)
+        for p_ennemi in projectiles_ennemis:
+            pygame.draw.rect(ecran, (255, 0, 0), p_ennemi.rect)
 
         pygame.display.flip()
         horloge.tick(60)
