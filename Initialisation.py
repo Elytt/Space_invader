@@ -1,5 +1,5 @@
 import pygame
-from Elyttcode.Invaders import generate_invaders, move_invaders, check_lose_condition #import des Invaders
+from Elyttcode.Invaders import *#import des Invaders
 
 # --- CONFIGURATION GLOBALE ---
 
