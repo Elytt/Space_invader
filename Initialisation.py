@@ -151,6 +151,8 @@ def collision(projectile, invader):
     return False
 
 
+
+
 #---------- LANCEMENT DU JEU ----------
 
 def main():
@@ -196,3 +198,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+ 
