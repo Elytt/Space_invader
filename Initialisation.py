@@ -230,7 +230,9 @@ def main():
             if p_ennemi.rect.colliderect(joueur):
                 print("DÉFAITE : Le vaisseau a été abimé !")
                 NB_VIE -= 1
+                time.sleep(0.1)
                 p_ennemi.actif = False
+                break
 # Nettoyage des projectiles ennemis hors écran
         projectiles_ennemis[:] = [p for p in projectiles_ennemis if p.actif]
         #end nettoyage
