@@ -36,7 +36,7 @@ class Invader(pygame.sprite.Sprite):
     def shoot(self, chance=1000):
         """
         Define "randomly" if the invader shoot.
-        'chance' défined rarirty : 1 chance / 1000 in each frame.
+        'chance' defines rarity : 1 chance / 1000 in each frame.
         """
         if random.randint(1, chance) == 1:
             return True
@@ -49,77 +49,7 @@ class Invader(pygame.sprite.Sprite):
 # --- Functions ---                                                             
 def generate_invaders(rows, cols, start_pos=(50, 50)):                          
     """Generates a grid of invaders recursively."""                             
-    invaders = pygame.sprite.Group()                                            
-                                                                                 
-    def _generate(row, col):                                                    
-        if row >= rows:                                                         
-            return
-        
-        life = (row % 3) + 1
-        x = start_pos[0] + col * (INVADER_SIZE[0] + 10)
-        y = start_pos[1] + row * (INVADER_SIZE[1] + 10)
-        
-        invader = Invader(life, (x, y))
-        invaders.add(invader)
-
-        next_col = col + 1
-        next_row = row
-        if next_col >= cols:
-            next_col = 0
-            next_row += 1
-        
-        _generate(next_row, next_col)
-
-    _generate(0, 0)
-    return invaders
-
-def move_invaders(invaders):
-    """Moves the group of invaders and handles wall collision."""
-    move_down = False
-    for invader in invaders:
-        if invader.rect.right > SCREEN_WIDTH - 50 or invader.rect.left < 50:
-            move_down = True
-            break
-    
-    if move_down:
-        for invader in invaders:
-            invader.direction *= -1
-            invader.rect.y += INVADER_SIZE[1] + 5
-
-def check_lose_condition(invaders):
-    """Checks if any invader has reached the bottom of the screen."""
-    for invader in invaders:
-        if invader.rect.bottom >= SCREEN_HEIGHT:
-            return True
-    return False
-
-# --- Main Game Loop ---
-def main():
-    pygame.init()
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    pygame.display.set_caption("Space Invaders")
-
-    all_invaders = generate_invaders(5, 10)
-
-    clock = pygame.time.Clock()  # Create a clock object
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-
-        # Update game state
-        all_invaders.update()
-       
-
-    def update(self):
-        """Move the invader."""
-        self.rect.x += self.speed * self.direction
-
-# --- Functions ---
-def generate_invaders(rows, cols, start_pos=(50, 50)):
-    """Generates a grid of invaders recursively."""
-    invaders = pygame.sprite.Group()
+    invaders = pygame.sprite.Group() 
 
     def _generate(row, col):
         if row >= rows:
@@ -163,56 +93,3 @@ def check_lose_condition(invaders):
         if invader.rect.bottom >= SCREEN_HEIGHT:
             return True
     return False
-
-# --- Main Game Loop ---
-def main():
-    pygame.init()
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    pygame.display.set_caption("Space Invaders")
-    all_invaders = generate_invaders(5, 10)
-    clock = pygame.time.Clock()  # Create a clock object to manage frame rate
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-
-        # Update game state
-        all_invaders.update()
-        move_invaders(all_invaders)
-
-        if check_lose_condition(all_invaders):
-            print("You Lose!")
-            running = False
-
-        # Drawing
-        screen.fill((0, 0, 0))  # Black background
-
-
-    all_invaders = generate_invaders(5, 10)
-    
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-
-        # Update game state
-        all_invaders.update()
-        move_invaders(all_invaders)
-
-        if check_lose_condition(all_invaders):
-            print("You Lose!")
-            running = False
-
-        # Drawing
-        screen.fill((0, 0, 0))  # Black background
-        all_invaders.draw(screen)
-        pygame.display.flip()
-        clock.tick(30)
-
-    pygame.quit()
-
-if __name__ == '__main__':
-    main()
-
