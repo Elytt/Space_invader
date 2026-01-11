@@ -256,7 +256,7 @@ def main():
         for proj in liste_projectiles: #on dessine les projectiles 
                 pygame.draw.rect(ecran, (255, 255, 0), proj.rect)
         for p_ennemi in projectiles_ennemis:
-            pygame.draw.rect(ecran, (255, 0, 0), p_ennemi.rect
+            pygame.draw.rect(ecran, (255, 0, 0), p_ennemi.rect)
 
         if NB_VIE <= 0 :
             pygame.mixer.music.stop()
