@@ -4,22 +4,54 @@ import pygame
 
 LARGEUR, HAUTEUR = 800, 600 #taille de la fenètre
 VITESSE_JOUEUR = 5  #Valeur qui pourra être modifiée 
-NOIR = (0, 0, 0) #Couleur du fond
+BLEU = (0, 0, 255)
+ROUGE = (255, 0, 0)
+VERT = (0, 255, 0)
+NOIR = (0, 0, 0)
+BLANC = (255, 255, 255)
+VERT_MORT = (94, 229, 77)
+NB_VIE = 3
+SCORE = 0
 
-def initialiser_jeu(titre="Space Invaders", l=LARGEUR, h=HAUTEUR):
+# ---------- CONFIGURATION DES ASSETS ----------
+    # images
+vaisseau = pygame.image.load("assets/vaisseau.png")         # charger l'image du vaisseau
+bg = pygame.image.load('assets/fond-ecran_accueil.png')  # charger l'image du fond d'écran
+bg = pygame.transform.scale(bg, (LARGEUR, HAUTEUR))         # adapter la taille du fond d'éecran à celle de la taille de la fenêtre
+vie_0 = pygame.image.load("assets/vie_0.png")               # charger l'image du niveau 0 de vie
+vie_1 = pygame.image.load("assets/vie_1.png")               # charger l'image du niveau 1 de vie
+vie_2 = pygame.image.load("assets/vie_2.png")               # charger l'image du niveau 2 de vie
+vie_3 = pygame.image.load("assets/vie_3.png")               # charger l'image du niveau 3 de vie
+
+
+
+def initialiser_jeu(titre="⋊ Space Invader ⋉", l=LARGEUR, h=HAUTEUR, icon_home=pygame.image.load('assets/icon_home.ico')):
     """
-    Initialise la bibliothèque Pygame et crée la fenêtre
-    Arguments: titre (str), l (int), h (int)
+    Initialise la bibliothèque Pygame, crée la fenêtre, lui met une description et une icône
+    Arguments: titre (str), l (int), h (int), icon_home (Surface)
     Retour: tuple (ecran, horloge)
     """
+    global SON_MORT, police_mort, police_mort_score
+    
     pygame.init()
     ecran = pygame.display.set_mode((l, h))
+    
     pygame.display.set_caption(titre)
+    pygame.display.set_icon(icon_home)
+        # musique
+    pygame.mixer.music.load("assets/musique.mp3")               # charger le fichier audio de la musique
+    pygame.mixer.music.play(-1)                                 # jouer la musique et la jouer indéfiniment 
+    SON_MORT = pygame.mixer.Sound("assets/son_mort.mp3")        # charger le son de mort du vaisseau
+        # police
+    police_titre = pygame.font.Font("assets/police_pixels.ttf", 72) #(chemin, taille)
+    police_bouton = pygame.font.Font("assets/police_pixels.ttf", 36)
+    police_mort = pygame.font.Font("assets/police_pixels.ttf", 150)
+    police_mort_score = pygame.font.Font("assets/police_pixels.ttf", 75)
+    
+    
     horloge = pygame.time.Clock()
     return ecran, horloge
 
-# ---------- CONFIGURATION DES ASSETS ----------
-vaisseau = pygame.image.load("assets/vaisseau.png")
 
 #------------------ PROJECTILES ---------------
 
@@ -169,9 +201,12 @@ def main():
     en_cours = True
 
     while en_cours:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                en_cours = False
+        for event in pygame.event.get(): 
+            if event.type == pygame.QUIT:   # si on appuie sur la croix pour fermer la fenêtre
+                en_cours = False    # sortir de la boucle du jeu et donc le fermer
+            if event.type == pygame.KEYDOWN:    # si on appuie sur une touche
+                if event.key == pygame.K_ESCAPE:    # Si cette touche est "Esc"
+                    en_cours = False
 
         touches = pygame.key.get_pressed()
         gerer_deplacement_joueur(joueur, touches)
@@ -180,13 +215,30 @@ def main():
 
         update_projectiles(liste_projectiles, invaders) #On met à jour les projectiles (déplacement)
 
+    
+        ''' if INVADER_COLOR <= 0 :
+            score += 1'''
 
-        ecran.fill(NOIR)
-
+        ecran.blit(bg, (0, 0)) # afficher l'image du fond d'écran
+        
+        ecran.blit(
+            pygame.transform.scale(pygame.image.load(f"assets/vie_{NB_VIE}.png"), (75, 75)), # afficher les images de vie; en x = 75 et y = 75
+            (5, 0)
+            )
+        
         ecran.blit(vaisseau, joueur) # On affiche l'image du vaisseau sur le joueur
 
         for proj in liste_projectiles: #on dessine les projectiles 
                 pygame.draw.rect(ecran, (255, 255, 0), proj.rect)
+
+        if NB_VIE <= 0 :
+            pygame.mixer.music.stop()
+            pygame.mixer.Sound.play(SON_MORT, 0)
+            ecran.fill(VERT_MORT)
+            text_mort = police_mort.render('GAME OVER !!!!', False, ROUGE)
+            text_mort_score = police_mort_score.render(f'Ton score est de : {SCORE * 500}', False, BLANC)
+            ecran.blit(text_mort, (180,200))
+            ecran.blit(text_mort_score, (180,300))
 
         pygame.display.flip()
         horloge.tick(60)
