@@ -198,6 +198,7 @@ def main():
 
     liste_projectiles = []
     projectiles_ennemis = []
+    all_invaders = generate_invaders(5, 10)
 
 
     dernier_tir = 0
@@ -213,9 +214,12 @@ def main():
                     en_cours = False
 # --- Tir des Invaders ---
         for invader in all_invaders:
-            if hasattr(invader, 'tirer') and invader.tirer(chance=1000):
+            if hasattr(invader, 'shoot') and invader.tirer(chance=1000):
                 nouveau_tir = Projectile(invader.rect.midbottom, 5, 1)
                 projectiles_ennemis.append(nouveau_tir)
+                all_invaders.update()       # Fait bouger les aliens individuellement
+                move_invaders(all_invaders) # Gère le rebond sur les murs et la descente
+                all_invaders.draw(ecran)    # Dessine les aliens sur l'écran
 
 # --- Mise à jour des projectiles ennemis ---
 
@@ -234,7 +238,7 @@ def main():
 
         dernier_tir = tirer_projectile(touches, (joueur.x, joueur.y), liste_projectiles, dernier_tir)
 
-        update_projectiles(liste_projectiles, invaders) #On met à jour les projectiles (déplacement)
+        update_projectiles(liste_projectiles, all_invaders) #On met à jour les projectiles (déplacement)
 
     
         ''' if INVADER_COLOR <= 0 :
