@@ -215,7 +215,7 @@ def main():
                     en_cours = False
 # --- Tir des Invaders ---
         for invader in all_invaders:
-            if hasattr(invader, 'shoot') and invader.shoot(chance=100000):
+            if hasattr(invader, 'shoot') and invader.shoot(chance=1000):
                 nouveau_tir = Projectile(invader.rect.midbottom, 3, 1)
                 projectiles_ennemis.append(nouveau_tir)
         all_invaders.update()       # Fait bouger les aliens individuellement
