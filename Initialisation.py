@@ -18,6 +18,9 @@ def initialiser_jeu(titre="Space Invaders", l=LARGEUR, h=HAUTEUR):
     horloge = pygame.time.Clock()
     return ecran, horloge
 
+# ---------- CONFIGURATION DES ASSETS ----------
+vaisseau = pygame.image.load("assets/vaisseau.png")
+
 #------------------ PROJECTILES ---------------
 
 class Projectile:
@@ -101,7 +104,8 @@ def creer_joueur():
     Crée le joueur (rectangle vert) et définit la position de départ du joueur
     Retour: pygame.Rect
     """
-    joueur = pygame.Rect(LARGEUR // 2, HAUTEUR - 50, 40, 30) #Sprite à ajouter après mais pour l'instant c'est un rectangle :)
+    joueur = vaisseau.get_rect() # créer un rectangle qui correspond aux dimensions de l'image
+    joueur.midbottom = (LARGEUR // 2, HAUTEUR - 30) # placer le joueur sur la moitié de l'écran en abscisse et à 30 px au dessus du bas de la fenêtre
     return joueur
 
 def gerer_deplacement_joueur(joueur, touches):
@@ -124,7 +128,7 @@ def tirer_projectile(touches, position_depart, liste_projectiles, dernier_tir):
     if touches[pygame.K_SPACE]:
         if maintenant - dernier_tir > delai_tir:
             # On centre le tir sur le joueur
-            x = position_depart[0] + 17 # Ajustement pour être au milieu du vaisseau
+            x = position_depart[0] + 22 # Ajustement pour être au milieu du vaisseau
             y = position_depart[1]
             
             nouveau_projectile = Projectile((x, y), 10, -1)
@@ -179,7 +183,7 @@ def main():
 
         ecran.fill(NOIR)
 
-        pygame.draw.rect(ecran, (0, 255, 0), joueur) # On dessine un rectangle vert
+        ecran.blit(vaisseau, joueur) # On affiche l'image du vaisseau sur le joueur
 
         for proj in liste_projectiles: #on dessine les projectiles 
                 pygame.draw.rect(ecran, (255, 255, 0), proj.rect)
