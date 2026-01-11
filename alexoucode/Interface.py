@@ -33,6 +33,7 @@ vie_0 = pygame.image.load("../assets/vie_0.png")
 vie_1 = pygame.image.load("../assets/vie_1.png")
 vie_2 = pygame.image.load("../assets/vie_2.png")
 vie_3 = pygame.image.load("../assets/vie_3.png")
+vaisseau = pygame.image.load("../assets/vaisseau.png")
     # variable qui permet de garder le jeu ouvert
 running = True
     # musique
