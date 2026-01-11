@@ -256,7 +256,7 @@ def main():
         for proj in liste_projectiles: #on dessine les projectiles 
                 pygame.draw.rect(ecran, (255, 255, 0), proj.rect)
         for p_ennemi in projectiles_ennemis:
-            pygame.draw.rect(ecran, (255, 0, 0), p_ennemi.rect)
+            pygame.draw.rect(ecran, (255, 0, 0), p_ennemi.rect
 
         if NB_VIE <= 0 :
             pygame.mixer.music.stop()
@@ -265,15 +265,7 @@ def main():
             text_mort = police_mort.render('GAME OVER !!!!', False, ROUGE)
             text_mort_score = police_mort_score.render(f'Ton score est de : {SCORE * 500}', False, BLANC)
             ecran.blit(text_mort, (180,200))
-            ecran.blit(text_mort_score, (180,300))
-
-        if NB_VIE <= 0 :
-            pygame.mixer.music.stop()
-            pygame.mixer.Sound.play(SON_MORT, 0)
-            ecran.fill(VERT_MORT)
-            text_mort = police_mort.render('GAME OVER !!!!', False, ROUGE)
-            text_mort_score = police_mort_score.render(f'Ton score est de : {SCORE * 500}', False, BLANC)
-            ecran.blit(text_mort, (180,200))
+            all_invaders.draw(ecran)
             ecran.blit(text_mort_score, (180,300))
 
         pygame.display.flip()
