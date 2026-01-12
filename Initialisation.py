@@ -3,7 +3,7 @@ from Elyttcode.Invaders import *#import des Invaders
 
 # --- CONFIGURATION GLOBALE ---
 
-LARGEUR, HAUTEUR = 800, 600 #taille de la fenètre
+LARGEUR, HAUTEUR = 800, 600 #taille de la fenêtre
 VITESSE_JOUEUR = 5  #Valeur qui pourra être modifiée 
 BLEU = (0, 0, 255)
 ROUGE = (255, 0, 0)
@@ -11,7 +11,7 @@ VERT = (0, 255, 0)
 NOIR = (0, 0, 0)
 BLANC = (255, 255, 255)
 VERT_MORT = (94, 229, 77)
-NB_VIE = 3
+NB_VIE = 3  # nombre de vie du joueur
 SCORE = 0
 GAME_OVER = False
 
