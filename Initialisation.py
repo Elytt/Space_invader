@@ -30,7 +30,7 @@ def initialiser_jeu(titre="⋊ Space Invader ⋉", l=LARGEUR, h=HAUTEUR, icon_ho
     Arguments: titre (str), l (int), h (int), icon_home (Surface)
     Retour: tuple (ecran, horloge)
     """
-    global SON_MORT, police_mort, police_mort_score
+    global SON_MORT, police_mort, police_mort_score, SON_TIR_VAISSEAU, SON_VICTOIRE
     
     pygame.init()
     ecran = pygame.display.set_mode((l, h))
@@ -41,10 +41,10 @@ def initialiser_jeu(titre="⋊ Space Invader ⋉", l=LARGEUR, h=HAUTEUR, icon_ho
     pygame.mixer.music.load("assets/musique.mp3")               # charger le fichier audio de la musique
     pygame.mixer.music.play(-1)                                 # jouer la musique et la jouer indéfiniment 
     SON_MORT = pygame.mixer.Sound("assets/son_mort.mp3")        # charger le son de mort du vaisseau
+    SON_TIR_VAISSEAU = pygame.mixer.Sound("assets/son_tir_vaisseau.mp3")        # charger le son de tir du vaisseau
+    SON_VICTOIRE = pygame.mixer.Sound("assets/son_victoire.mp3")        # charger le son de victoire
         # police
-    police_titre = pygame.font.Font("assets/police_pixels.ttf", 72) #(chemin, taille)
-    police_bouton = pygame.font.Font("assets/police_pixels.ttf", 36)
-    police_mort = pygame.font.Font("assets/police_pixels.ttf", 150)
+    police_mort = pygame.font.Font("assets/police_pixels.ttf", 150)#(chemin, taille)
     police_mort_score = pygame.font.Font("assets/police_pixels.ttf", 75)
     
     
@@ -162,7 +162,7 @@ def tirer_projectile(touches, position_depart, liste_projectiles, dernier_tir):
             # On centre le tir sur le joueur
             x = position_depart[0] + 22 # Ajustement pour être au milieu du vaisseau
             y = position_depart[1]
-            
+            pygame.mixer.Sound.play(SON_TIR_VAISSEAU, 0)
             nouveau_projectile = Projectile((x, y), 12, -1)
             liste_projectiles.append(nouveau_projectile)
             return maintenant # On renvoie l'heure du tir pour mettre à jour le chrono entre tirs
@@ -196,7 +196,7 @@ def main():
 
     liste_projectiles = []
     projectiles_ennemis = []
-    all_invaders = generate_invaders(3, 10)
+    all_invaders = generate_invaders(1, 1)
 
 
     dernier_tir = 0
@@ -278,10 +278,17 @@ def main():
 
         if check_win_condition(all_invaders):
             ecran.fill(VERT) # Un beau vert pour la victoire
+            pygame.mixer.music.stop()
+            pygame.mixer.Sound.play(SON_VICTOIRE, 0)
+
             text_victoire = police_mort.render('VICTOIRE !', False, BLANC)
-            ecran.blit(text_victoire, (200, 250))
+            text_victoire_score = police_mort_score.render(f"Ton score est de : {SCORE * 500} !!!!", False, BLANC)
+            
+            ecran.blit(text_victoire_score, (125,300))
+            ecran.blit(text_victoire, (200, 200))
+
             pygame.display.flip()
-            pygame.time.wait(3000) # Attendre 3 secondes avant de fermer
+            pygame.time.wait(5000) # Attendre 3 secondes avant de fermer
             en_cours = False
             
 
