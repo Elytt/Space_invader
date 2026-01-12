@@ -13,17 +13,15 @@ BLANC = (255, 255, 255)
 VERT_MORT = (94, 229, 77)
 NB_VIE = 3
 SCORE = 0
+GAME_OVER = False
 
 # ---------- CONFIGURATION DES ASSETS ----------
     # images
 vaisseau = pygame.image.load("assets/vaisseau.png")         # charger l'image du vaisseau
 bg = pygame.image.load('assets/fond-ecran_accueil.png')  # charger l'image du fond d'écran
 bg = pygame.transform.scale(bg, (LARGEUR, HAUTEUR))         # adapter la taille du fond d'éecran à celle de la taille de la fenêtre
-vie_0 = pygame.image.load("assets/vie_0.png")               # charger l'image du niveau 0 de vie
-vie_1 = pygame.image.load("assets/vie_1.png")               # charger l'image du niveau 1 de vie
-vie_2 = pygame.image.load("assets/vie_2.png")               # charger l'image du niveau 2 de vie
-vie_3 = pygame.image.load("assets/vie_3.png")               # charger l'image du niveau 3 de vie
-
+vie_liste = [pygame.image.load("assets/vie_0.png"), pygame.image.load("assets/vie_1.png"), pygame.image.load("assets/vie_2.png"), pygame.image.load("assets/vie_3.png")] 
+# charger les images du niveau de vie 0, 1, 2 et 3 
 
 
 def initialiser_jeu(titre="⋊ Space Invader ⋉", l=LARGEUR, h=HAUTEUR, icon_home=pygame.image.load('assets/icon_home.ico')):
@@ -91,7 +89,7 @@ class Projectile:
         """
         Retourne la position actuelle du projectile
         """
-        return (self.x, self.y)
+        return (self.rect.x, self.rect.y)
 
 
 def update_projectiles(projectiles, invaders):
@@ -101,7 +99,7 @@ def update_projectiles(projectiles, invaders):
     - collision
     - suppression si nécessaire
     """
-
+    global SCORE
     for projectile in projectiles:
         if not projectile.actif:
             continue
@@ -120,7 +118,8 @@ def update_projectiles(projectiles, invaders):
                 # Si l'invader n'a plus de vie
                 if invader.life <= 0:
                     print("👾 Invader détruit !")
-                    invaders.remove(invader)
+                    invader.kill()
+                    SCORE += 1
 
                 break
 
@@ -156,7 +155,7 @@ def tirer_projectile(touches, position_depart, liste_projectiles, dernier_tir):
     Crée un projectile si Espace est pressé et si le temps de recharge est passé
     """
     maintenant = pygame.time.get_ticks()
-    delai_tir = 500  # 500 millisecondes entre chaque tir
+    delai_tir = 400  # 4s00 millisecondes entre chaque tir
 
     if touches[pygame.K_SPACE]:
         if maintenant - dernier_tir > delai_tir:
@@ -164,7 +163,7 @@ def tirer_projectile(touches, position_depart, liste_projectiles, dernier_tir):
             x = position_depart[0] + 22 # Ajustement pour être au milieu du vaisseau
             y = position_depart[1]
             
-            nouveau_projectile = Projectile((x, y), 10, -1)
+            nouveau_projectile = Projectile((x, y), 12, -1)
             liste_projectiles.append(nouveau_projectile)
             return maintenant # On renvoie l'heure du tir pour mettre à jour le chrono entre tirs
             
@@ -177,11 +176,9 @@ def tirer_projectile(touches, position_depart, liste_projectiles, dernier_tir):
 def collision(projectile, invader):
     """
     Vérifie si le projectile touche un invader
-    Ici on compare simplement les positions (logique simple)
+    Ici on renvoie True si une collition es détecté avec l'invader et sinon False
     """
-    if projectile.position_actuelle() == invader.position:
-        return True
-    return False
+    return projectile.rect.colliderect(invader.rect)
 
 
 
@@ -189,7 +186,7 @@ def collision(projectile, invader):
 #---------- LANCEMENT DU JEU ----------
 
 def main():
-    global NB_VIE
+    global NB_VIE, SCORE, GAME_OVER, vie_liste # pour pouvoir accéder aux deucx variables en dehors de la fonction main()
     """
     Lance le jeu
     Pas d'arguments
@@ -199,7 +196,7 @@ def main():
 
     liste_projectiles = []
     projectiles_ennemis = []
-    all_invaders = generate_invaders(5, 10)
+    all_invaders = generate_invaders(3, 10)
 
 
     dernier_tir = 0
@@ -213,6 +210,19 @@ def main():
             if event.type == pygame.KEYDOWN:    # si on appuie sur une touche
                 if event.key == pygame.K_ESCAPE:    # Si cette touche est "Esc"
                     en_cours = False
+
+        if GAME_OVER == True :
+            ecran.fill(VERT_MORT)
+            
+            text_mort = police_mort.render('GAME OVER !!!!', False, ROUGE)
+            text_mort_score = police_mort_score.render(f'Ton score est de : {SCORE * 500}', False, BLANC)
+            
+            ecran.blit(text_mort, (180,200))
+            ecran.blit(text_mort_score, (180,300))
+            pygame.display.flip()
+            horloge.tick(60)
+            continue
+
 # --- Tir des Invaders ---
         for invader in all_invaders:
             if hasattr(invader, 'shoot') and invader.shoot(chance=1000):
@@ -228,11 +238,12 @@ def main():
             p_ennemi.deplacer()
             # Vérifier si le joueur est touché
             if p_ennemi.rect.colliderect(joueur):
-                print("DÉFAITE : Le vaisseau a été abimé !")
+                print("Attention : Le vaisseau a été abimé !")
                 NB_VIE -= 1
                 time.sleep(0.1)
                 p_ennemi.actif = False
                 break
+
 # Nettoyage des projectiles ennemis hors écran
         projectiles_ennemis[:] = [p for p in projectiles_ennemis if p.actif]
         #end nettoyage
@@ -244,14 +255,10 @@ def main():
 
         update_projectiles(liste_projectiles, all_invaders) #On met à jour les projectiles (déplacement)
 
-    
-        ''' if INVADER_COLOR <= 0 :
-            score += 1'''
-
         ecran.blit(bg, (0, 0)) # afficher l'image du fond d'écran
         
         ecran.blit(
-            pygame.transform.scale(pygame.image.load(f"assets/vie_{NB_VIE}.png"), (75, 75)), # afficher les images de vie; en x = 75 et y = 75
+            pygame.transform.scale(vie_liste[NB_VIE], (75, 75)), # afficher les images de vie; en x = 75 et y = 75
             (5, 0)
             )
         
@@ -264,15 +271,11 @@ def main():
         for p_ennemi in projectiles_ennemis:
             pygame.draw.rect(ecran, (255, 0, 0), p_ennemi.rect)
 
-        if NB_VIE <= 0 :
+        if (NB_VIE <= 0 or check_lose_condition(all_invaders)) and not GAME_OVER :
+            GAME_OVER = True
             pygame.mixer.music.stop()
             pygame.mixer.Sound.play(SON_MORT, 0)
-            ecran.fill(VERT_MORT)
-            text_mort = police_mort.render('GAME OVER !!!!', False, ROUGE)
-            text_mort_score = police_mort_score.render(f'Ton score est de : {SCORE * 500}', False, BLANC)
-            ecran.blit(text_mort, (180,200))
-            all_invaders.draw(ecran)
-            ecran.blit(text_mort_score, (180,300))
+            
 
         pygame.display.flip()
         horloge.tick(60)

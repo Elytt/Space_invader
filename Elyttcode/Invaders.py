@@ -11,8 +11,8 @@ import time
 import random
 
 # --- Game Settings ---                                                         
-SCREEN_WIDTH = 800                                                              
-SCREEN_HEIGHT = 600                                                             
+LARGEUR = 800                                                              
+HAUTEUR = 600                                                             
 INVADER_SIZE = (30, 30)                                                         
 INVADER_COLORS = {                                                              
     1: (0, 255, 0),    # Green for life 1                                       
@@ -78,7 +78,7 @@ def move_invaders(invaders):
     move_down = False
 
     for invader in invaders:
-        if invader.rect.right > SCREEN_WIDTH - 50 or invader.rect.left < 50:
+        if invader.rect.right > LARGEUR - 50 or invader.rect.left < 50:
             move_down = True
             break
     
@@ -90,6 +90,6 @@ def move_invaders(invaders):
 def check_lose_condition(invaders):
     """Checks if any invader has reached the bottom of the screen."""
     for invader in invaders:
-        if invader.rect.bottom >= SCREEN_HEIGHT:
+        if invader.rect.bottom >= HAUTEUR:
             return True
     return False
