@@ -187,7 +187,7 @@ def collision(projectile, invader):
 #---------- LANCEMENT DU JEU ----------
 
 def main():
-    global NB_VIE, SCORE, GAME_OVER, vie_liste # pour pouvoir accéder aux deucx variables en dehors de la fonction main()
+    global NB_VIE, SCORE, GAME_OVER, vie_liste # pour pouvoir accéder aux variables en dehors de la fonction main()
     """
     Lance le jeu
     Pas d'arguments
