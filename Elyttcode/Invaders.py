@@ -93,3 +93,8 @@ def check_lose_condition(invaders):
         if invader.rect.bottom >= HAUTEUR:
             return True
     return False
+
+def check_invaders(invaders):
+    """Check if there is at least one invader left"""
+    return len(invaders) > 0
+
