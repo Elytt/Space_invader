@@ -196,7 +196,7 @@ def main():
 
     liste_projectiles = []
     projectiles_ennemis = []
-    all_invaders = generate_invaders(1, 1)
+    all_invaders = generate_invaders(5, 10)
 
 
     dernier_tir = 0
