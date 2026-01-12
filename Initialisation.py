@@ -223,6 +223,25 @@ def main():
             pygame.display.flip()
             horloge.tick(60)
             continue
+        if (NB_VIE <= 0 or check_lose_condition(all_invaders)) and not GAME_OVER :
+            GAME_OVER = True
+            pygame.mixer.music.stop()
+            pygame.mixer.Sound.play(SON_MORT, 0)
+
+        if check_win_condition(all_invaders):
+            ecran.fill(VERT) # Un beau vert pour la victoire
+            pygame.mixer.music.stop()
+            pygame.mixer.Sound.play(SON_VICTOIRE, 0)
+
+            text_victoire = police_mort.render('VICTOIRE !', False, BLANC)
+            text_victoire_score = police_mort_score.render(f"Ton score est de : {SCORE * 500} !!!!", False, BLANC)
+            
+            ecran.blit(text_victoire_score, (125,300))
+            ecran.blit(text_victoire, (200, 200))
+
+            pygame.display.flip()
+            pygame.time.wait(5000) # Attendre 3 secondes avant de fermer
+            en_cours = False
 
 # --- Tir des Invaders ---
         for invader in all_invaders:
@@ -270,28 +289,7 @@ def main():
         for proj in liste_projectiles: #on dessine les projectiles 
                 ecran.blit(projectile_img, proj.rect.topleft)
         for p_ennemi in projectiles_ennemis:
-            pygame.draw.rect(ecran, (255, 0, 0), p_ennemi.rect)
-
-        if (NB_VIE <= 0 or check_lose_condition(all_invaders)) and not GAME_OVER :
-            GAME_OVER = True
-            pygame.mixer.music.stop()
-            pygame.mixer.Sound.play(SON_MORT, 0)
-
-        if check_win_condition(all_invaders):
-            ecran.fill(VERT) # Un beau vert pour la victoire
-            pygame.mixer.music.stop()
-            pygame.mixer.Sound.play(SON_VICTOIRE, 0)
-
-            text_victoire = police_mort.render('VICTOIRE !', False, BLANC)
-            text_victoire_score = police_mort_score.render(f"Ton score est de : {SCORE * 500} !!!!", False, BLANC)
-            
-            ecran.blit(text_victoire_score, (125,300))
-            ecran.blit(text_victoire, (200, 200))
-
-            pygame.display.flip()
-            pygame.time.wait(5000) # Attendre 3 secondes avant de fermer
-            en_cours = False
-            
+            pygame.draw.rect(ecran, (255, 0, 0), p_ennemi.rect)        
 
         pygame.display.flip()
         horloge.tick(60)
