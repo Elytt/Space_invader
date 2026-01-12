@@ -96,5 +96,5 @@ def check_lose_condition(invaders):
 
 def check_win_condition(invaders):
     """Check if there is at least one invader left"""
-    return len(invaders) > 0
+    return len(invaders) == 0
 
