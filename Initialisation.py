@@ -22,7 +22,8 @@ bg = pygame.image.load('assets/fond-ecran_accueil.png')  # charger l'image du fo
 bg = pygame.transform.scale(bg, (LARGEUR, HAUTEUR))         # adapter la taille du fond d'éecran à celle de la taille de la fenêtre
 vie_liste = [pygame.image.load("assets/vie_0.png"), pygame.image.load("assets/vie_1.png"), pygame.image.load("assets/vie_2.png"), pygame.image.load("assets/vie_3.png")] 
 # charger les images du niveau de vie 0, 1, 2 et 3 
-
+projectile_img = pygame.image.load('assets/projectile_vaisseau.png')  # charger l'image du fond d'écran
+projectile_img = pygame.transform.scale(projectile_img, (5, 10))
 
 def initialiser_jeu(titre="⋊ Space Invader ⋉", l=LARGEUR, h=HAUTEUR, icon_home=pygame.image.load('assets/icon_home.ico')):
     """
@@ -267,7 +268,7 @@ def main():
 
         
         for proj in liste_projectiles: #on dessine les projectiles 
-                pygame.draw.rect(ecran, (255, 255, 0), proj.rect)
+                ecran.blit(projectile_img, proj.rect.topleft)
         for p_ennemi in projectiles_ennemis:
             pygame.draw.rect(ecran, (255, 0, 0), p_ennemi.rect)
 

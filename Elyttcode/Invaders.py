@@ -15,9 +15,9 @@ LARGEUR = 800
 HAUTEUR = 600                                                             
 INVADER_SIZE = (30, 30)                                                         
 INVADER_COLORS = {                                                              
-    1: (0, 255, 0),    # Green for life 1                                       
-    2: (255, 255, 0),  # Yellow for life 2                                      
-    3: (255, 0, 0),    # Red for life 3                                         
+    1: "assets/invader1.png",    # Green for life 1                                       
+    2: "assets/invader2.png",  # Yellow for life 2                                      
+    3: "assets/invader3.png",    # Red for life 3                                         
 }                                                                               
                                                                                  
 # --- Invader Class ---                                                         
@@ -26,10 +26,13 @@ class Invader(pygame.sprite.Sprite):
                                                                                  
     def __init__(self, life, initial_position):                                 
         super().__init__()                                                      
-        self.life = life                                                        
-        self.image = pygame.Surface(INVADER_SIZE)                               
-        self.image.fill(INVADER_COLORS.get(life, (255, 255, 255)))  # Default to white
-        self.rect = self.image.get_rect(topleft=initial_position)               
+        self.life = life                          
+        img_chemin = INVADER_COLORS.get(life, "assets/invader1.png")
+        self.image = pygame.image.load(img_chemin).convert_alpha()
+
+        # Créer le rect à partir de l'image
+        self.rect = self.image.get_rect(topleft=initial_position)                   
+                             
         self.direction = 1  # 1 for right, -1 for left                          
         self.speed = 2  # Speed of the invader
 
