@@ -275,6 +275,14 @@ def main():
             GAME_OVER = True
             pygame.mixer.music.stop()
             pygame.mixer.Sound.play(SON_MORT, 0)
+
+        if check_win_condition(all_invaders):
+            ecran.fill(VERT) # Un beau vert pour la victoire
+            text_victoire = police_mort.render('VICTOIRE !', False, BLANC)
+            ecran.blit(text_victoire, (200, 250))
+            pygame.display.flip()
+            pygame.time.wait(3000) # Attendre 3 secondes avant de fermer
+            en_cours = False
             
 
         pygame.display.flip()

@@ -96,9 +96,5 @@ def check_lose_condition(invaders):
 
 def check_invaders(invaders):
     """Check if there is at least one invader left"""
-    if len(invaders) == 0 :
-        ecran.fill(VERT_MORT)                                                                  
-        text_mort = police_mort.render('GAME OVER !!!!', False, ROUGE)
-        text_mort_score = police_mort_score.render(f'Ton score est de : {SCORE * 500}',     False, BLANC)
-
+    return len(invaders) > 0
 
